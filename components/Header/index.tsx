@@ -1,19 +1,38 @@
 import Link from 'next/link';
 
+const BRAND = {
+  yellow: "var(--brand-yellow)",
+  red: "var(--brand-red)",
+  blue: "var(--brand-blue)",
+  green: "var(--brand-green)",
+};
+
 export function Header() {
   return(
-    <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
-      <div className="max-w-6xl mx-auto px-4 py-5 flex justify-between items-center">
-        <Link href="/">
-          <h1 className="text-2xl font-extrabold text-blue-900 tracking-tight cursor-pointer hover:text-blue-700 transition">ObsESP</h1>
-        </Link>
-        <nav className="hidden md:flex space-x-8">
-          <Link href="/" className="text-gray-600 hover:text-blue-700 font-medium transition">Início</Link>
-          <Link href="/sobre" className="text-gray-600 hover:text-blue-700 font-medium transition">Sobre</Link>
-          <Link href="/programas-projetos" className="text-gray-600 hover:text-blue-700 font-medium transition">Programas</Link>
-          <Link href="/boletins" className="text-gray-600 hover:text-blue-700 font-medium transition">Boletins</Link>
-          <Link href="/equipe" className="text-gray-600 hover:text-blue-700 font-medium transition">Equipe</Link>
-          <Link href="/contato" className="text-gray-600 hover:text-blue-700 font-medium transition">Contato</Link>
+    <header className="border-b border-[var(--ink)]/10">
+      {/* Top mini-bar UFPI */}
+      <div className="border-b border-[var(--ink)]/10 bg-[var(--ink)] text-[var(--paper)]/80 text-xs">
+        <div className="mx-auto max-w-7xl px-6 py-2 flex items-center justify-between font-mono tracking-wide">
+          <span>UFPI · Campus Senador Helvídio Nunes de Barros · Picos / PI</span>
+          <span className="hidden md:inline">FSP / USP · DINTER Nutrição em Saúde Pública</span>
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-7xl px-6 py-5 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="flex items-baseline gap-2">
+            <span className="text-2xl font-black tracking-tight" style={{ fontFamily: "var(--font-display)" }}>
+              Obs<span style={{ color: BRAND.red }}>E</span><span style={{ color: BRAND.blue }}>S</span><span style={{ color: BRAND.green }}>P</span>
+            </span>
+            <span className="text-xs font-mono text-[var(--ink)]/50">/ ufpi picos</span>
+          </div>
+        </div>
+        <nav className="hidden md:flex items-center gap-7 text-sm">
+          <Link href="/sobre" className="hover:text-[var(--brand-red)] transition">Sobre</Link>
+          <Link href="/programas-projetos" className="hover:text-[var(--brand-red)] transition">Programas</Link>
+          <Link href="/boletins" className="hover:text-[var(--brand-red)] transition">Boletins</Link>
+          <Link href="/noticias" className="hover:text-[var(--brand-red)] transition">Notícias</Link>
+          <Link href="/contato" className="px-3 py-1.5 bg-[var(--ink)] text-[var(--paper)] rounded-full text-xs font-medium hover:bg-[var(--brand-red)] transition">Contato</Link>
         </nav>
       </div>
     </header>

@@ -1,6 +1,13 @@
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 
+const BRAND = {
+  yellow: 'var(--brand-yellow)',
+  red: 'var(--brand-red)',
+  blue: 'var(--brand-blue)',
+  green: 'var(--brand-green)',
+};
+
 const projetos = [
   {
     titulo: 'Exposição de fatores epidemiológicos que influenciam na saúde de adultos e idosos',
@@ -17,6 +24,8 @@ const projetos = [
         previsao: '2026',
       },
     ],
+    accentColor: BRAND.red,
+    tag: '02',
   },
   {
     titulo: 'Ações educativas para promoção de hábitos de vida saudável em escolares',
@@ -24,67 +33,117 @@ const projetos = [
     vigencia: '01/01/2025 a 31/12/2026',
     descricao: `O presente projeto tem como proposta divulgar informações baseadas em evidências científicas, por meio de uma abordagem multiprofissional, sobre hábitos de vida saudável em crianças. Para tanto, pretende-se promover ações educativas a partir de dados epidemiológicos oriundos do "Inquérito de saúde de base populacional nos municípios de Teresina e Picos, no Piauí (ISAD-PI)", visando fortalecer a atenção à saúde infantil.`,
     cursos: [],
+    accentColor: BRAND.green,
+    tag: '02',
   },
 ];
 
 export default function ProgramasProjetosPage() {
   return (
-    <div className="min-h-screen bg-white text-gray-800 font-sans flex flex-col">
+    <div className="min-h-screen bg-[var(--paper)] text-[var(--ink)] antialiased flex flex-col">
       <Header />
 
-      <main className="flex-grow max-w-5xl mx-auto w-full px-6 py-10">
-        {/* Breadcrumb */}
-        <nav className="text-sm text-gray-500 mb-6">
-          <a href="/" className="hover:text-blue-700">🏠 ObsESP</a>
-          <span className="mx-2">›</span>
-          <span className="text-gray-700">Programas e Projetos ObsESP</span>
-        </nav>
+      <main className="flex-grow">
+        {/* Page hero */}
+        <div className="border-b border-[var(--ink)]/10">
+          <div className="mx-auto max-w-7xl px-6 pt-12 pb-10">
+            {/* Breadcrumb */}
+            <nav className="flex items-center gap-2 text-xs font-mono uppercase tracking-[0.15em] text-[var(--ink)]/50 mb-8">
+              <a href="/" className="hover:text-[var(--brand-red)] transition">ObsESP</a>
+              <span>/</span>
+              <span className="text-[var(--ink)]">Programas e Projetos</span>
+            </nav>
 
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">Programas e Projetos Obsesp</h1>
+            <div className="flex items-start gap-4">
+              <span
+                className="font-mono text-xs mt-1.5 px-2 py-0.5 rounded text-white"
+                style={{ background: BRAND.red }}
+              >
+                02
+              </span>
+              <h1
+                className="text-[clamp(2rem,5vw,3.5rem)] leading-[1] font-semibold tracking-tight"
+                style={{ fontFamily: 'var(--font-display)' }}
+              >
+                Programas e Projetos
+              </h1>
+            </div>
 
-        {/* Datas */}
-        <div className="flex gap-8 text-sm text-gray-500 border-t border-b border-gray-200 py-3 mb-10">
-          <span>Publicado: 25/02/2025 15:56</span>
-          <span>Atualização mais recente: 29/04/2025 08:54</span>
+            <div className="flex gap-6 text-xs font-mono text-[var(--ink)]/40 mt-4 ml-10">
+              <span>Publicado: 25/02/2025</span>
+              <span>Atualizado: 29/04/2025</span>
+            </div>
+          </div>
         </div>
 
-        {/* Lista de projetos */}
-        <div className="space-y-12">
+        {/* Content */}
+        <div className="mx-auto max-w-7xl px-6 py-16 space-y-8">
           {projetos.map((projeto, index) => (
-            <article key={index} className="border-b border-gray-100 pb-10">
-              {/* Título do projeto */}
-              <h2 className="text-base font-bold text-blue-700 mb-3">{projeto.titulo}</h2>
+            <article
+              key={index}
+              className="rounded-2xl border border-[var(--ink)]/10 overflow-hidden hover:-translate-y-0.5 transition-transform"
+            >
+              {/* Top accent bar */}
+              <div className="h-1" style={{ background: projeto.accentColor }} />
 
-              {/* Coordenador */}
-              <p className="text-sm font-bold text-gray-800 mb-1">
-                COORDENADOR(A): Prof.ª {projeto.coordenador}
-              </p>
-
-              {/* Vigência */}
-              <p className="text-sm font-bold text-gray-800 mb-4">
-                VIGÊNCIA: {projeto.vigencia}.
-              </p>
-
-              {/* Descrição */}
-              <p className="text-sm text-gray-700 leading-relaxed text-justify mb-5">
-                {projeto.descricao}
-              </p>
-
-              {/* Cursos e eventos */}
-              {projeto.cursos.length > 0 && (
-                <div>
-                  <p className="text-sm font-bold text-gray-800 mb-2">CURSO E/OU EVENTOS REALIZADOS:</p>
-                  <ul className="list-disc list-inside space-y-3">
-                    {projeto.cursos.map((curso, ci) => (
-                      <li key={ci} className="text-sm text-gray-700 leading-relaxed">
-                        {curso.nome}
-                        <br />
-                        <span className="font-semibold">Previsão de realização: {curso.previsao}.</span>
-                      </li>
-                    ))}
-                  </ul>
+              <div className="p-6 md:p-8">
+                {/* Número + Título */}
+                <div className="flex items-start gap-3 mb-4">
+                  <span className="font-mono text-xs text-[var(--ink)]/30 mt-1.5 shrink-0">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <h2
+                    className="text-xl md:text-2xl font-semibold tracking-tight leading-tight"
+                    style={{ fontFamily: 'var(--font-display)' }}
+                  >
+                    {projeto.titulo}
+                  </h2>
                 </div>
-              )}
+
+                {/* Metadados */}
+                <div className="flex flex-wrap gap-4 mb-5 ml-7">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-mono text-[var(--ink)]/50">
+                    <span style={{ color: projeto.accentColor }}>●</span>
+                    COORD.: {projeto.coordenador}
+                  </span>
+                  <span className="text-xs font-mono text-[var(--ink)]/50">
+                    VIGÊNCIA: {projeto.vigencia}
+                  </span>
+                </div>
+
+                {/* Descrição */}
+                <p className="text-sm md:text-base text-[var(--ink)]/70 leading-relaxed mb-6 ml-7">
+                  {projeto.descricao}
+                </p>
+
+                {/* Cursos e eventos */}
+                {projeto.cursos.length > 0 && (
+                  <div className="ml-7 pt-5 border-t border-[var(--ink)]/10">
+                    <p className="text-xs font-mono uppercase tracking-[0.15em] text-[var(--ink)]/40 mb-4">
+                      Cursos e eventos realizados
+                    </p>
+                    <ul className="space-y-4">
+                      {projeto.cursos.map((curso, ci) => (
+                        <li
+                          key={ci}
+                          className="flex gap-3 text-sm text-[var(--ink)]/70 leading-relaxed"
+                        >
+                          <span className="shrink-0 mt-0.5 font-mono text-[var(--ink)]/30">
+                            {String(ci + 1).padStart(2, '0')}
+                          </span>
+                          <div>
+                            <span>{curso.nome}</span>
+                            <br />
+                            <span className="text-xs font-mono text-[var(--ink)]/50 mt-1 block">
+                              Previsão de realização: {curso.previsao}
+                            </span>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
             </article>
           ))}
         </div>
