@@ -80,7 +80,7 @@ export default function NovoBoletimPage() {
       <label className="block text-xs font-mono uppercase tracking-wider text-[var(--ink)]/50 mb-1.5">
         {label}{obrigatorio && <span className="text-red-500 ml-1">*</span>}
       </label>
-      <input type={tipo} value={(form as Record<string,string>)[campo]} onChange={e => atualizar(campo, e.target.value)}
+      <input type={tipo} value={(form as Record<string, any>)[campo]} onChange={e => atualizar(campo, e.target.value)}
         required={obrigatorio} placeholder={placeholder}
         className="w-full px-4 py-2.5 rounded-xl border border-[var(--ink)]/15 bg-transparent text-[var(--ink)] placeholder:text-[var(--ink)]/25 focus:outline-none focus:border-[var(--brand-blue)] transition text-sm" />
     </div>
