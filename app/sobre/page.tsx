@@ -1,5 +1,7 @@
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { createClient } from '@/utils/supabase/server';
+import { Membro, COR_PARA_CSS } from '@/utils/supabase/types';
 
 const BRAND = {
   yellow: 'var(--brand-yellow)',
@@ -8,46 +10,17 @@ const BRAND = {
   green: 'var(--brand-green)',
 };
 
-const teamMembers = [
-  {
-    name: 'Danilla Michelle Costa e Silva',
-    role: 'Coordenadora do ObsESP\nDocente de Nutrição (CSHNB/UFPI)\nDoutora em Ciências (PPGNSP-FSP/USP)',
-    accentColor: BRAND.yellow,
-    image: null,
-  },
-  {
-    name: 'Edina Araújo Rodrigues Oliveira',
-    role: 'Coordenadora Adjunta do ObsESP\nDocente de Enfermagem (CSHNB/UFPI)\nDoutora em Ciências (PPGNSP-FSP/USP)',
-    accentColor: BRAND.red,
-    image: null,
-  },
-  {
-    name: 'Laura Maria Feitosa Formiga',
-    role: 'Docente de Enfermagem (CSHNB/UFPI)\nDoutora em Ciências (PPGNSP-FSP/USP)',
-    accentColor: BRAND.blue,
-    image: null,
-  },
-  {
-    name: 'Membro 4',
-    role: 'Cargo / Instituição',
-    accentColor: BRAND.green,
-    image: null,
-  },
-  {
-    name: 'Membro 5',
-    role: 'Cargo / Instituição',
-    accentColor: 'var(--ink)',
-    image: null,
-  },
-  {
-    name: 'Membro 6',
-    role: 'Cargo / Instituição',
-    accentColor: BRAND.yellow,
-    image: null,
-  },
-];
+export default async function SobrePage() {
+  const supabase = await createClient();
 
-export default function SobrePage() {
+  const { data } = await supabase
+    .from('membros')
+    .select('*')
+    .eq('ativo', true)
+    .order('ordem', { ascending: true });
+
+  const membros: Membro[] = data ?? [];
+
   return (
     <div className="min-h-screen bg-[var(--paper)] text-[var(--ink)] antialiased flex flex-col">
       <Header />
@@ -76,11 +49,6 @@ export default function SobrePage() {
               >
                 Quem Somos
               </h1>
-            </div>
-
-            <div className="flex gap-6 text-xs font-mono text-[var(--ink)]/40 mt-4 ml-10">
-              <span>Publicado: 20/01/2025</span>
-              <span>Atualizado: 14/02/2025</span>
             </div>
           </div>
         </div>
@@ -129,40 +97,70 @@ export default function SobrePage() {
               >
                 Equipe editorial
               </h2>
-              <span className="text-xs font-mono text-[var(--ink)]/40 hidden md:block">
-                {teamMembers.length} membros
-              </span>
+              {membros.length > 0 && (
+                <span className="text-xs font-mono text-[var(--ink)]/40 hidden md:block">
+                  {membros.length === 1 ? '1 membro' : `${membros.length} membros`}
+                </span>
+              )}
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-              {teamMembers.map((member, index) => (
-                <div
-                  key={index}
-                  className="group relative rounded-2xl overflow-hidden border border-[var(--ink)]/10 hover:-translate-y-1 transition-transform"
-                >
-                  {/* Photo placeholder */}
-                  <div
-                    className="w-full aspect-[4/3] flex items-center justify-center text-xs font-mono text-[var(--ink)]/30 bg-[var(--ink)]/5"
-                  >
-                    foto
-                  </div>
-                  {/* Color accent bar */}
-                  <div className="h-1" style={{ background: member.accentColor }} />
-                  {/* Info */}
-                  <div className="p-4">
-                    <p
-                      className="font-semibold text-sm leading-tight mb-1"
-                      style={{ fontFamily: 'var(--font-display)' }}
+            {membros.length === 0 ? (
+              <p className="text-[var(--ink)]/40 font-mono text-sm">Nenhum membro cadastrado ainda.</p>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                {membros.map((member, index) => {
+                  const cores = [BRAND.yellow, BRAND.red, BRAND.blue, BRAND.green, 'var(--ink)', BRAND.yellow];
+                  const acento = COR_PARA_CSS[member.foto_url ? '' : ''] ?? cores[index % cores.length];
+
+                  return (
+                    <div
+                      key={member.id}
+                      className="group relative rounded-2xl overflow-hidden border border-[var(--ink)]/10 hover:-translate-y-1 transition-transform"
                     >
-                      {member.name}
-                    </p>
-                    <p className="text-xs text-[var(--ink)]/60 whitespace-pre-line leading-relaxed">
-                      {member.role}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
+                      {/* Photo */}
+                      <div className="w-full aspect-[4/3] flex items-center justify-center text-xs font-mono text-[var(--ink)]/30 bg-[var(--ink)]/5 overflow-hidden">
+                        {member.foto_url ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={member.foto_url}
+                            alt={member.nome}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <span>foto</span>
+                        )}
+                      </div>
+                      {/* Color accent bar */}
+                      <div className="h-1" style={{ background: cores[index % cores.length] }} />
+                      {/* Info */}
+                      <div className="p-4">
+                        <p
+                          className="font-semibold text-sm leading-tight mb-1"
+                          style={{ fontFamily: 'var(--font-display)' }}
+                        >
+                          {member.titulo ? `${member.titulo} ` : ''}{member.nome}
+                        </p>
+                        {member.cargo && (
+                          <p className="text-xs text-[var(--ink)]/60 whitespace-pre-line leading-relaxed">
+                            {member.cargo}
+                          </p>
+                        )}
+                        {member.lattes_url && (
+                          <a
+                            href={member.lattes_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs font-mono text-[var(--ink)]/30 hover:text-[var(--brand-blue)] transition mt-2 block"
+                          >
+                            Lattes ↗
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
       </main>

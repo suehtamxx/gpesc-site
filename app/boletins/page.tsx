@@ -1,44 +1,47 @@
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { createClient } from '@/utils/supabase/server';
+import { Boletim, COR_PARA_CSS } from '@/utils/supabase/types';
 
-const BRAND = {
-  yellow: 'var(--brand-yellow)',
-  red: 'var(--brand-red)',
-  blue: 'var(--brand-blue)',
-  green: 'var(--brand-green)',
-};
+const BRAND_BLUE = 'var(--brand-blue)';
 
-const boletins = [
-  {
-    ano: '2025',
-    itens: [
-      {
-        titulo: 'Boletim Epidemiológico, Vol. 1, No 1, Jan-Mar, 2025',
-        subtitulo: 'Estado Nutricional de Idosos residentes nas cidades de Teresina e Picos no Piauí',
-        autores:
-          'Layanne Cristina de Carvalho Lavôr, Artemizia Francisca de Sousa, Danilla Michelle Costa e Silva, Edina Araújo Rodrigues Oliveira, Laura Maria Feitosa Formiga, Rumão Batista Nunes de Carvalho, Karoline de Macêdo Gonçalves Frota.',
-        resumo: `Em todo o mundo, são notáveis o envelhecimento populacional e a transição epidemiológica e nutricional, com aumento dos problemas relacionados ao excesso de peso. Desse modo, no Boletim "Estado Nutricional de idosos residentes nas cidades de Teresina e Picos no Piauí" são apresentados os dados do estado nutricional de idosos (60 anos ou mais de idade) que participaram do Inquérito de Saúde Domiciliar no Piauí (ISAD-PI). O estado nutricional foi determinado calculando-se o Índice de Massa Corporal (IMC), que avalia a proporção de peso pela altura do indivíduo (peso em quilogramas dividido pelo quadrado da altura em metros).`,
-        link: '#',
-        linkLabel: 'Boletim_2025_1',
-        accentColor: BRAND.blue,
-        tag: '03 · 2025 · Vol.1 Nº1',
-      },
-      {
-        titulo: 'Boletim Epidemiológico, Vol. 1, No 2, Abr-Jun, 2025',
-        subtitulo: 'Atendimento Nutricional em Unidades Básicas de Saúde de Picos: pacientes hipertensos e diabéticos',
-        autores:
-          'Danilla Michelle Costa e Silva, Edina Araújo Rodrigues Oliveira, Laura Maria Feitosa Formiga, Rumão Batista Nunes de Carvalho, Estela Edileusa de Jesus, Izamara Lima Portela, Vitória...',
-        resumo: '',
-        link: '#',
-        linkLabel: 'Boletim_2025_2',
-        accentColor: BRAND.green,
-        tag: '03 · 2025 · Vol.1 Nº2',
-      },
-    ],
-  },
-];
+// Agrupa os boletins por ano
+function agruparPorAno(boletins: Boletim[]) {
+  const map = new Map<number, Boletim[]>();
+  for (const b of boletins) {
+    const lista = map.get(b.ano) ?? [];
+    lista.push(b);
+    map.set(b.ano, lista);
+  }
+  // Ordena os anos em ordem decrescente
+  return Array.from(map.entries())
+    .sort(([a], [b]) => b - a)
+    .map(([ano, itens]) => ({ ano, itens }));
+}
 
-export default function BoletinsPage() {
+function formatarTag(b: Boletim): string {
+  const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+  const inicio = b.mes_inicio ? meses[b.mes_inicio - 1] : null;
+  const fim = b.mes_fim ? meses[b.mes_fim - 1] : null;
+  const periodo = inicio && fim ? `${inicio}-${fim}` : (inicio ?? '');
+  const vol = b.volume ? `Vol.${b.volume}` : '';
+  const num = b.numero ? `Nº${b.numero}` : '';
+  return [periodo, b.ano, vol, num].filter(Boolean).join(' · ');
+}
+
+export default async function BoletinsPage() {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('boletins')
+    .select('*')
+    .eq('publicado', true)
+    .order('ano', { ascending: false })
+    .order('numero', { ascending: false });
+
+  const boletins: Boletim[] = data ?? [];
+  const grupos = agruparPorAno(boletins);
+
   return (
     <div className="min-h-screen bg-[var(--paper)] text-[var(--ink)] antialiased flex flex-col">
       <Header />
@@ -57,7 +60,7 @@ export default function BoletinsPage() {
             <div className="flex items-start gap-4">
               <span
                 className="font-mono text-xs mt-1.5 px-2 py-0.5 rounded text-white"
-                style={{ background: BRAND.blue }}
+                style={{ background: BRAND_BLUE }}
               >
                 03
               </span>
@@ -68,23 +71,30 @@ export default function BoletinsPage() {
                 Boletins
               </h1>
             </div>
-
-            <div className="flex gap-6 text-xs font-mono text-[var(--ink)]/40 mt-4 ml-10">
-              <span>Publicado: 20/01/2025</span>
-              <span>Atualizado: 19/03/2026</span>
-            </div>
           </div>
         </div>
 
         {/* Content */}
         <div className="mx-auto max-w-7xl px-6 py-16">
-          {boletins.map((grupo) => (
+          {error && (
+            <div className="rounded-xl border border-red-200 bg-red-50 p-6 mb-8 text-red-700 text-sm font-mono">
+              Erro ao carregar boletins. Tente novamente mais tarde.
+            </div>
+          )}
+
+          {grupos.length === 0 && !error && (
+            <div className="text-center py-24 text-[var(--ink)]/40 font-mono text-sm">
+              Nenhum boletim publicado ainda.
+            </div>
+          )}
+
+          {grupos.map((grupo) => (
             <section key={grupo.ano} className="mb-16">
               <div className="flex items-center gap-4 mb-10">
                 <div className="h-px flex-1 bg-[var(--ink)]/10" />
                 <span
                   className="font-mono text-xs px-3 py-1 rounded"
-                  style={{ background: BRAND.blue, color: 'white' }}
+                  style={{ background: BRAND_BLUE, color: 'white' }}
                 >
                   {grupo.ano}
                 </span>
@@ -92,52 +102,63 @@ export default function BoletinsPage() {
               </div>
 
               <div className="space-y-8">
-                {grupo.itens.map((boletim, index) => (
-                  <article
-                    key={index}
-                    className="group relative rounded-2xl border border-[var(--ink)]/10 overflow-hidden hover:-translate-y-0.5 transition-transform"
-                  >
-                    {/* Top accent bar */}
-                    <div className="h-1" style={{ background: boletim.accentColor }} />
+                {grupo.itens.map((boletim) => {
+                  const acento = COR_PARA_CSS[boletim.cor_acento ?? 'blue'] ?? BRAND_BLUE;
+                  const tag = formatarTag(boletim);
 
-                    <div className="p-6 md:p-8">
-                      <div className="flex items-start justify-between gap-4 mb-4">
-                        <span className="font-mono text-xs text-[var(--ink)]/40">{boletim.tag}</span>
-                        <a
-                          href={boletim.link}
-                          className="text-xs font-mono px-3 py-1 rounded-full border border-[var(--ink)]/15 hover:border-[var(--ink)] transition"
-                        >
-                          {boletim.linkLabel} ↗
-                        </a>
-                      </div>
+                  return (
+                    <article
+                      key={boletim.id}
+                      className="group relative rounded-2xl border border-[var(--ink)]/10 overflow-hidden hover:-translate-y-0.5 transition-transform"
+                    >
+                      {/* Top accent bar */}
+                      <div className="h-1" style={{ background: acento }} />
 
-                      {/* Título */}
-                      <a href={boletim.link}>
+                      <div className="p-6 md:p-8">
+                        <div className="flex items-start justify-between gap-4 mb-4">
+                          <span className="font-mono text-xs text-[var(--ink)]/40">{tag}</span>
+                          {boletim.pdf_url && (
+                            <a
+                              href={boletim.pdf_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs font-mono px-3 py-1 rounded-full border border-[var(--ink)]/15 hover:border-[var(--ink)] transition shrink-0"
+                            >
+                              Baixar PDF ↗
+                            </a>
+                          )}
+                        </div>
+
+                        {/* Título */}
                         <h2
-                          className="text-xl md:text-2xl font-semibold tracking-tight leading-tight mb-2 hover:opacity-70 transition"
+                          className="text-xl md:text-2xl font-semibold tracking-tight leading-tight mb-2"
                           style={{ fontFamily: 'var(--font-display)' }}
                         >
                           {boletim.titulo}
                         </h2>
-                      </a>
 
-                      {/* Subtítulo */}
-                      <p className="text-base text-[var(--ink)]/70 mb-4 leading-snug">{boletim.subtitulo}</p>
+                        {/* Subtítulo */}
+                        {boletim.subtitulo && (
+                          <p className="text-base text-[var(--ink)]/70 mb-4 leading-snug">{boletim.subtitulo}</p>
+                        )}
 
-                      {/* Autores */}
-                      <p className="text-sm text-[var(--ink)]/50 leading-relaxed mb-4">{boletim.autores}</p>
+                        {/* Autores */}
+                        {boletim.autores && (
+                          <p className="text-sm text-[var(--ink)]/50 leading-relaxed mb-4">{boletim.autores}</p>
+                        )}
 
-                      {/* Resumo */}
-                      {boletim.resumo && (
-                        <div className="mt-4 pt-4 border-t border-[var(--ink)]/10 text-sm text-[var(--ink)]/70 leading-relaxed space-y-3">
-                          {boletim.resumo.split('\n\n').map((paragrafo, pi) => (
-                            <p key={pi}>{paragrafo}</p>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </article>
-                ))}
+                        {/* Resumo */}
+                        {boletim.resumo && (
+                          <div className="mt-4 pt-4 border-t border-[var(--ink)]/10 text-sm text-[var(--ink)]/70 leading-relaxed space-y-3">
+                            {boletim.resumo.split('\n\n').map((paragrafo, pi) => (
+                              <p key={pi}>{paragrafo}</p>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </article>
+                  );
+                })}
               </div>
             </section>
           ))}
