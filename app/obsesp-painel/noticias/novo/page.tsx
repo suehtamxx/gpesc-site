@@ -13,6 +13,7 @@ export default function NovaNoticiaPage() {
     autores: '',
     corpo: '',
     referencias: '',
+    fonte_imagem: '',
     publicado: false,
   })
   const [foto, setFoto] = useState<File | null>(null)
@@ -54,6 +55,7 @@ export default function NovaNoticiaPage() {
       autores: form.autores || null,
       corpo: form.corpo || null,
       referencias: form.referencias || null,
+      fonte_imagem: form.fonte_imagem || null,
       foto_url,
       publicado: form.publicado,
     })
@@ -116,6 +118,18 @@ export default function NovaNoticiaPage() {
               )}
             </label>
           </div>
+        </div>
+
+        {/* Fonte da imagem */}
+        <div>
+          <label className={labelClass}>Fonte da imagem</label>
+          <input
+            type="text"
+            value={form.fonte_imagem}
+            onChange={e => atualizar('fonte_imagem', e.target.value)}
+            placeholder="Ex: arquivo ObsESP / nome do fotógrafo"
+            className={inputClass}
+          />
         </div>
 
         {/* Autores */}

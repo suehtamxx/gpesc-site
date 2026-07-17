@@ -8,6 +8,31 @@ interface Props {
   params: Promise<{ id: string }>
 }
 
+// Detecta URLs no meio de texto e transforma em <a> clicável
+function TextComLinks({ texto }: { texto: string }) {
+  const urlRegex = /(https?:\/\/[^\s,;]+)/g
+  const partes = texto.split(urlRegex)
+  return (
+    <>
+      {partes.map((parte, i) =>
+        urlRegex.test(parte) ? (
+          <a
+            key={i}
+            href={parte}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[var(--brand-blue)] hover:underline break-all"
+          >
+            {parte}
+          </a>
+        ) : (
+          <span key={i}>{parte}</span>
+        )
+      )}
+    </>
+  )
+}
+
 export default async function NoticiaDetalhePage({ params }: Props) {
   const { id } = await params
   const supabase = await createClient()
@@ -33,22 +58,22 @@ export default async function NoticiaDetalhePage({ params }: Props) {
     ? noticia.referencias.split('\n').map((r: string) => r.trim()).filter(Boolean)
     : []
 
-  const dataPublicacao = new Date(noticia.created_at).toLocaleDateString('pt-BR', {
-    day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
-  })
+  const fmtData = (iso: string) =>
+    new Date(iso).toLocaleString('pt-BR', {
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit',
+      timeZone: 'America/Sao_Paulo',
+    })
 
-  const dataAtualizacao = noticia.updated_at
-    ? new Date(noticia.updated_at).toLocaleDateString('pt-BR', {
-        day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
-      })
-    : null
+  const dataPublicacao = fmtData(noticia.created_at)
+  const dataAtualizacao = noticia.updated_at ? fmtData(noticia.updated_at) : null
 
   return (
     <div className="min-h-screen bg-[var(--paper)] text-[var(--ink)] antialiased flex flex-col">
       <Header />
 
       <main className="flex-grow">
-        {/* Breadcrumb */}
+        {/* Breadcrumb + Título */}
         <div className="border-b border-[var(--ink)]/10">
           <div className="mx-auto max-w-3xl px-6 pt-10 pb-8">
             <nav className="flex items-center gap-2 text-xs font-mono uppercase tracking-[0.15em] text-[var(--ink)]/50 mb-8">
@@ -59,7 +84,6 @@ export default async function NoticiaDetalhePage({ params }: Props) {
               <span className="text-[var(--ink)] truncate max-w-[200px]">{noticia.titulo}</span>
             </nav>
 
-            {/* Título */}
             <h1
               className="text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.1] font-semibold tracking-tight mb-6"
               style={{ fontFamily: 'var(--font-display)' }}
@@ -67,7 +91,6 @@ export default async function NoticiaDetalhePage({ params }: Props) {
               {noticia.titulo}
             </h1>
 
-            {/* Datas */}
             <div className="flex flex-wrap gap-6 text-xs font-mono text-[var(--ink)]/40 pb-6 border-b border-[var(--ink)]/10">
               <span>Publicado: {dataPublicacao}</span>
               {dataAtualizacao && <span>Atualização mais recente: {dataAtualizacao}</span>}
@@ -79,12 +102,17 @@ export default async function NoticiaDetalhePage({ params }: Props) {
 
           {/* Foto principal */}
           {noticia.foto_url && (
-            <figure className="flex justify-center">
+            <figure className="flex flex-col items-center gap-2">
               <img
                 src={noticia.foto_url}
                 alt={`Foto da notícia: ${noticia.titulo}`}
                 className="rounded-2xl max-h-[420px] w-auto object-cover shadow-sm"
               />
+              {noticia.fonte_imagem && (
+                <figcaption className="text-xs text-[var(--ink)]/45 font-mono text-center">
+                  Fonte da imagem: {noticia.fonte_imagem}
+                </figcaption>
+              )}
             </figure>
           )}
 
@@ -95,8 +123,12 @@ export default async function NoticiaDetalhePage({ params }: Props) {
                 const [nome, ...resto] = autor.split(',')
                 return (
                   <p key={i} className="text-sm text-center text-[var(--ink)]/80">
-                    <span className="font-semibold underline decoration-[var(--brand-red)]/40 underline-offset-2">{nome.trim()}</span>
-                    {resto.length > 0 && <span className="text-[var(--ink)]/60">{`, ${resto.join(',').trim()}`}</span>}
+                    <span className="font-semibold underline decoration-[var(--brand-red)]/40 underline-offset-2">
+                      {nome.trim()}
+                    </span>
+                    {resto.length > 0 && (
+                      <span className="text-[var(--ink)]/60">{`, ${resto.join(',').trim()}`}</span>
+                    )}
                   </p>
                 )
               })}
@@ -117,17 +149,13 @@ export default async function NoticiaDetalhePage({ params }: Props) {
           {/* Referências */}
           {referencias.length > 0 && (
             <section className="border-t border-[var(--ink)]/10 pt-8">
-              <h2 className="text-sm font-semibold mb-4" style={{ fontFamily: 'var(--font-display)' }}>Referências</h2>
+              <h2 className="text-sm font-semibold mb-4" style={{ fontFamily: 'var(--font-display)' }}>
+                Referências
+              </h2>
               <ul className="space-y-3">
                 {referencias.map((ref, i) => (
                   <li key={i} className="text-sm text-[var(--ink)]/70 leading-relaxed">
-                    {ref.startsWith('http') ? (
-                      <a href={ref} target="_blank" rel="noopener noreferrer" className="text-[var(--brand-blue)] hover:underline break-all">
-                        {ref}
-                      </a>
-                    ) : (
-                      ref
-                    )}
+                    <TextComLinks texto={ref} />
                   </li>
                 ))}
               </ul>

@@ -79,7 +79,7 @@ export default async function NoticiasPage() {
                   : null
 
                 const data = new Date(n.created_at).toLocaleDateString('pt-BR', {
-                  day: '2-digit', month: 'long', year: 'numeric'
+                  day: '2-digit', month: 'long', year: 'numeric', timeZone: 'America/Sao_Paulo'
                 })
 
                 return (
