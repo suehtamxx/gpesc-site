@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export default function BoletinsActions({ id, publicado }: { id: string; publicado: boolean }) {
   const router = useRouter()
@@ -26,6 +27,10 @@ export default function BoletinsActions({ id, publicado }: { id: string; publica
 
   return (
     <div className="flex items-center gap-2 shrink-0">
+      <Link href={`/obsesp-painel/boletins/${id}/editar`}
+        className="text-xs font-mono px-3 py-1.5 rounded-lg border border-[var(--ink)]/15 text-[var(--ink)]/60 hover:border-[var(--brand-blue)] hover:text-[var(--brand-blue)] transition">
+        Editar
+      </Link>
       <button onClick={togglePublicado} disabled={carregando}
         className={`text-xs font-mono px-3 py-1.5 rounded-lg border transition disabled:opacity-50 ${
           publicado

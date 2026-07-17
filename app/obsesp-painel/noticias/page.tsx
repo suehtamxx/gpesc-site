@@ -1,5 +1,6 @@
 import { createClient } from '@/utils/supabase/server'
 import Link from 'next/link'
+import NoticiasActions from './NoticiasActions'
 
 export default async function AdminNoticiasPage() {
   const supabase = await createClient()
@@ -49,20 +50,14 @@ export default async function AdminNoticiasPage() {
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-sm leading-snug truncate">{n.titulo}</p>
                 <p className="text-xs text-[var(--ink)]/40 font-mono mt-0.5">
-                  {new Date(n.created_at).toLocaleDateString('pt-BR')}
+                  {new Date(n.created_at).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })}
                   {' · '}
                   <span className={n.publicado ? 'text-green-600' : 'text-[var(--ink)]/30'}>
                     {n.publicado ? '● Publicado' : '○ Rascunho'}
                   </span>
                 </p>
               </div>
-              <Link
-                href={`/noticias/${n.id}`}
-                target="_blank"
-                className="text-xs font-mono text-[var(--ink)]/40 hover:text-[var(--ink)] transition px-2"
-              >
-                ↗ Ver
-              </Link>
+              <NoticiasActions id={n.id} publicado={n.publicado} />
             </div>
           ))}
         </div>

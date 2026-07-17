@@ -14,6 +14,7 @@ export default function AdminMembrosPage() {
   const [form, setForm] = useState({
     nome: '', titulo: '', cargo: '', lattes_url: '', ordem: '',
   })
+  const [editandoId, setEditandoId] = useState<string | null>(null)
   const [fotoArquivo, setFotoArquivo] = useState<File | null>(null)
   const [fotoPreview, setFotoPreview] = useState<string | null>(null)
   const [salvando, setSalvando] = useState(false)
@@ -75,27 +76,51 @@ export default function AdminMembrosPage() {
       foto_url = urlData.publicUrl
     }
 
-    const { error } = await supabase.from('membros').insert({
-      nome: form.nome,
-      titulo: form.titulo || null,
-      cargo: form.cargo || null,
-      lattes_url: form.lattes_url || null,
-      ordem: form.ordem ? parseInt(form.ordem) : null,
-      foto_url,
-      ativo: true,
-    })
-
-    if (error) {
-      setErro(`Erro ao salvar: ${error.message}`)
-      setSalvando(false)
-      return
+    if (editandoId) {
+      // Modo edição: UPDATE
+      const updates: Record<string, unknown> = {
+        nome: form.nome,
+        titulo: form.titulo || null,
+        cargo: form.cargo || null,
+        lattes_url: form.lattes_url || null,
+        ordem: form.ordem ? parseInt(form.ordem) : null,
+      }
+      if (foto_url) updates.foto_url = foto_url
+      const { error } = await supabase.from('membros').update(updates).eq('id', editandoId)
+      if (error) { setErro(`Erro ao atualizar: ${error.message}`); setSalvando(false); return }
+    } else {
+      // Modo criação: INSERT
+      const { error } = await supabase.from('membros').insert({
+        nome: form.nome,
+        titulo: form.titulo || null,
+        cargo: form.cargo || null,
+        lattes_url: form.lattes_url || null,
+        ordem: form.ordem ? parseInt(form.ordem) : null,
+        foto_url,
+        ativo: true,
+      })
+      if (error) { setErro(`Erro ao salvar: ${error.message}`); setSalvando(false); return }
     }
 
     // Limpar formulário
     setForm({ nome: '', titulo: '', cargo: '', lattes_url: '', ordem: '' })
+    setEditandoId(null)
     limparFoto()
     await buscarMembros()
     setSalvando(false)
+  }
+
+  function editarMembro(m: Membro) {
+    setEditandoId(m.id)
+    setForm({
+      nome: m.nome ?? '',
+      titulo: m.titulo ?? '',
+      cargo: m.cargo ?? '',
+      lattes_url: m.lattes_url ?? '',
+      ordem: m.ordem?.toString() ?? '',
+    })
+    limparFoto()
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   async function toggleAtivo(id: string, ativo: boolean) {
@@ -146,7 +171,7 @@ export default function AdminMembrosPage() {
       {/* Formulário de cadastro */}
       <div className="rounded-2xl border border-[var(--ink)]/10 p-6 mb-8">
         <h2 className="font-semibold text-sm mb-5" style={{ fontFamily: 'var(--font-display)' }}>
-          Adicionar novo membro
+          {editandoId ? 'Editar membro' : 'Adicionar novo membro'}
         </h2>
         <form onSubmit={salvar} className="space-y-4">
 
@@ -282,8 +307,15 @@ export default function AdminMembrosPage() {
             className="px-6 py-2.5 rounded-xl text-sm font-medium text-white transition disabled:opacity-60"
             style={{ background: 'var(--brand-blue)' }}
           >
-            {salvando ? 'Salvando...' : '+ Adicionar membro'}
+            {salvando ? (editandoId ? 'Atualizando...' : 'Salvando...') : (editandoId ? 'Atualizar membro' : '+ Adicionar membro')}
           </button>
+          {editandoId && (
+            <button type="button"
+              onClick={() => { setEditandoId(null); setForm({ nome: '', titulo: '', cargo: '', lattes_url: '', ordem: '' }); limparFoto() }}
+              className="px-5 py-2.5 rounded-xl text-sm border border-[var(--ink)]/15 hover:border-[var(--ink)] transition">
+              Cancelar edição
+            </button>
+          )}
         </form>
       </div>
 
@@ -329,6 +361,12 @@ export default function AdminMembrosPage() {
               </div>
 
               <div className="flex gap-2 shrink-0">
+                <button
+                  onClick={() => editarMembro(m)}
+                  className="text-xs font-mono px-2.5 py-1 rounded-lg border border-[var(--ink)]/10 text-[var(--ink)]/60 hover:border-[var(--brand-blue)] hover:text-[var(--brand-blue)] transition"
+                >
+                  Editar
+                </button>
                 <button
                   onClick={() => toggleAtivo(m.id, m.ativo)}
                   className="text-xs font-mono px-2.5 py-1 rounded-lg border border-[var(--ink)]/10 hover:border-[var(--ink)]/30 transition"

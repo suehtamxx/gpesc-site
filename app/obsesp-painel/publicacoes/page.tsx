@@ -8,6 +8,7 @@ export default function AdminPublicacoesPage() {
   const supabase = createClient()
   const [publicacoes, setPublicacoes] = useState<Publicacao[]>([])
   const [form, setForm] = useState({ titulo: '', autores: '', ano: new Date().getFullYear().toString(), doi_url: '', tipo: 'artigo' })
+  const [editandoId, setEditandoId] = useState<string | null>(null)
   const [salvando, setSalvando] = useState(false)
   const [carregando, setCarregando] = useState(true)
 
@@ -23,17 +24,40 @@ export default function AdminPublicacoesPage() {
     e.preventDefault()
     if (!form.titulo) return
     setSalvando(true)
-    await supabase.from('publicacoes').insert({
-      titulo: form.titulo,
-      autores: form.autores || null,
-      ano: form.ano ? parseInt(form.ano) : null,
-      doi_url: form.doi_url || null,
-      tipo: form.tipo,
-      publicado: true,
-    })
+    if (editandoId) {
+      await supabase.from('publicacoes').update({
+        titulo: form.titulo,
+        autores: form.autores || null,
+        ano: form.ano ? parseInt(form.ano) : null,
+        doi_url: form.doi_url || null,
+        tipo: form.tipo,
+      }).eq('id', editandoId)
+      setEditandoId(null)
+    } else {
+      await supabase.from('publicacoes').insert({
+        titulo: form.titulo,
+        autores: form.autores || null,
+        ano: form.ano ? parseInt(form.ano) : null,
+        doi_url: form.doi_url || null,
+        tipo: form.tipo,
+        publicado: true,
+      })
+    }
     setForm({ titulo: '', autores: '', ano: new Date().getFullYear().toString(), doi_url: '', tipo: 'artigo' })
     await buscar()
     setSalvando(false)
+  }
+
+  function editarPublicacao(p: Publicacao) {
+    setEditandoId(p.id)
+    setForm({
+      titulo: p.titulo ?? '',
+      autores: p.autores ?? '',
+      ano: p.ano?.toString() ?? new Date().getFullYear().toString(),
+      doi_url: p.doi_url ?? '',
+      tipo: p.tipo ?? 'artigo',
+    })
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   async function excluir(id: string) {
@@ -59,7 +83,9 @@ export default function AdminPublicacoesPage() {
 
       {/* Formulário */}
       <div className="rounded-2xl border border-[var(--ink)]/10 p-6 mb-8">
-        <h2 className="font-semibold text-sm mb-4" style={{ fontFamily: 'var(--font-display)' }}>Adicionar publicação</h2>
+        <h2 className="font-semibold text-sm mb-4" style={{ fontFamily: 'var(--font-display)' }}>
+          {editandoId ? 'Editar publicação' : 'Adicionar publicação'}
+        </h2>
         <form onSubmit={salvar} className="space-y-4">
           <div>
             <label className={labelStyle}>Título completo *</label>
@@ -95,8 +121,15 @@ export default function AdminPublicacoesPage() {
           <button type="submit" disabled={salvando}
             className="px-6 py-2.5 rounded-xl text-sm font-medium text-white transition disabled:opacity-60"
             style={{ background: 'var(--brand-green)' }}>
-            {salvando ? 'Salvando...' : '+ Adicionar publicação'}
+            {salvando ? (editandoId ? 'Atualizando...' : 'Salvando...') : (editandoId ? 'Atualizar publicação' : '+ Adicionar publicação')}
           </button>
+          {editandoId && (
+            <button type="button"
+              onClick={() => { setEditandoId(null); setForm({ titulo: '', autores: '', ano: new Date().getFullYear().toString(), doi_url: '', tipo: 'artigo' }) }}
+              className="px-5 py-2.5 rounded-xl text-sm border border-[var(--ink)]/15 hover:border-[var(--ink)] transition">
+              Cancelar edição
+            </button>
+          )}
         </form>
       </div>
 
@@ -120,6 +153,10 @@ export default function AdminPublicacoesPage() {
                   </span>
                 </div>
                 <div className="flex gap-2 shrink-0 items-start">
+                  <button onClick={() => editarPublicacao(p)}
+                    className="text-xs font-mono px-2.5 py-1 rounded-lg border border-[var(--ink)]/10 text-[var(--ink)]/60 hover:border-[var(--brand-blue)] hover:text-[var(--brand-blue)] transition">
+                    Editar
+                  </button>
                   <button onClick={() => togglePublicado(p.id, p.publicado)}
                     className="text-xs font-mono px-2.5 py-1 rounded-lg border border-[var(--ink)]/10 hover:border-[var(--ink)]/30 transition">
                     {p.publicado ? 'Ocultar' : 'Publicar'}
