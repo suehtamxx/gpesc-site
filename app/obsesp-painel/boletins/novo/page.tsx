@@ -69,7 +69,7 @@ export default function NovoBoletimPage() {
     })
 
     if (error) { setErro(`Erro ao salvar: ${error.message}`); setSalvando(false); return }
-    router.push('/obsep-painel/boletins')
+    router.push('/obsesp-painel/boletins')
     router.refresh()
   }
 

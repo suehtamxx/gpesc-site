@@ -35,7 +35,7 @@ export default async function AdminBoletinsPage() {
         <div className="text-center py-20 rounded-2xl border border-dashed border-[var(--ink)]/15">
           <p className="text-4xl mb-3">📋</p>
           <p className="text-sm text-[var(--ink)]/50 mb-4">Nenhum boletim cadastrado ainda.</p>
-          <Link href="/obsep-painel/boletins/novo"
+          <Link href="/obsesp-painel/boletins/novo"
             className="text-sm font-medium px-4 py-2 rounded-xl border border-[var(--ink)]/15 hover:border-[var(--ink)] transition">
             Cadastrar o primeiro boletim
           </Link>

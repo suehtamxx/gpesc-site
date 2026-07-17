@@ -8,24 +8,22 @@ const BRAND = {
 };
 
 export function Header() {
-  return(
+  return (
     <header className="border-b border-[var(--ink)]/10">
       {/* Top mini-bar UFPI */}
       <div className="border-b border-[var(--ink)]/10 bg-[var(--ink)] text-[var(--paper)]/80 text-xs">
         <div className="mx-auto max-w-7xl px-6 py-2 flex items-center justify-between font-mono tracking-wide">
           <span>UFPI · Campus Senador Helvídio Nunes de Barros · Picos / PI</span>
-          <span className="hidden md:inline">FSP / USP · DINTER Nutrição em Saúde Pública</span>
         </div>
       </div>
 
       <div className="mx-auto max-w-7xl px-6 py-5 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-black tracking-tight" style={{ fontFamily: "var(--font-display)" }}>
-              Obs<span style={{ color: BRAND.red }}>E</span><span style={{ color: BRAND.blue }}>S</span><span style={{ color: BRAND.green }}>P</span>
-            </span>
-            <span className="text-xs font-mono text-[var(--ink)]/50">/ ufpi picos</span>
-          </div>
+          <img
+            src="/logo.png"
+            alt="Logo do Observatório de Epidemiologia e Saúde Pública"
+            className="h-14 w-auto object-contain"
+          />
         </div>
         <nav className="hidden md:flex items-center gap-7 text-sm">
           <Link href="/sobre" className="hover:text-[var(--brand-red)] transition">Sobre</Link>

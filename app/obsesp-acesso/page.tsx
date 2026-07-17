@@ -22,7 +22,7 @@ export default function AcessoPage() {
       setCarregando(false)
       return
     }
-    router.push('/obsep-painel')
+    router.push('/obsesp-painel')
     router.refresh()
   }
 

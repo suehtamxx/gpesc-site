@@ -24,9 +24,9 @@ export default async function proxy(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
 
   // Protege a rota secreta do painel — redireciona para acesso se não autenticado
-  if (request.nextUrl.pathname.startsWith('/obsep-painel') && !user) {
+  if (request.nextUrl.pathname.startsWith('/obsesp-painel') && !user) {
     const url = request.nextUrl.clone()
-    url.pathname = '/obsep-acesso'
+    url.pathname = '/obsesp-acesso'
     return NextResponse.redirect(url)
   }
 
@@ -34,6 +34,6 @@ export default async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/obsep-painel/:path*'],
+  matcher: ['/obsesp-painel/:path*'],
 }
 

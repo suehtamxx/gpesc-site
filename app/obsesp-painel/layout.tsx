@@ -5,10 +5,11 @@ import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
 
 const NAV = [
-  { href: '/obsep-painel', label: 'Dashboard', icon: '⌂' },
-  { href: '/obsep-painel/boletins', label: 'Boletins', icon: '📋' },
-  { href: '/obsep-painel/membros', label: 'Membros', icon: '👥' },
-  { href: '/obsep-painel/publicacoes', label: 'Publicações', icon: '📄' },
+  { href: '/obsesp-painel', label: 'Dashboard', icon: '⌂' },
+  { href: '/obsesp-painel/boletins', label: 'Boletins', icon: '📋' },
+  { href: '/obsesp-painel/membros', label: 'Membros', icon: '👥' },
+  { href: '/obsesp-painel/publicacoes', label: 'Publicações', icon: '📄' },
+  { href: '/obsesp-painel/noticias', label: 'Notícias', icon: '📰' },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -18,7 +19,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   async function handleLogout() {
     await supabase.auth.signOut()
-    router.push('/obsep-acesso')
+    router.push('/obsesp-acesso')
     router.refresh()
   }
 
@@ -38,8 +39,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         <nav className="flex-1 py-4 px-3 space-y-1">
           {NAV.map(item => {
-            const ativo = item.href === '/obsep-painel'
-              ? pathname === '/obsep-painel'
+            const ativo = item.href === '/obsesp-painel'
+              ? pathname === '/obsesp-painel'
               : pathname.startsWith(item.href)
             return (
               <Link key={item.href} href={item.href}

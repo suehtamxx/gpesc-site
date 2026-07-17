@@ -4,16 +4,18 @@ import Link from 'next/link'
 export default async function AdminDashboard() {
   const supabase = await createClient()
 
-  const [{ count: totalBoletins }, { count: totalMembros }, { count: totalPublicacoes }] = await Promise.all([
+  const [{ count: totalBoletins }, { count: totalMembros }, { count: totalPublicacoes }, { count: totalNoticias }] = await Promise.all([
     supabase.from('boletins').select('*', { count: 'exact', head: true }),
     supabase.from('membros').select('*', { count: 'exact', head: true }),
     supabase.from('publicacoes').select('*', { count: 'exact', head: true }),
+    supabase.from('noticias').select('*', { count: 'exact', head: true }),
   ])
 
   const cards = [
-    { label: 'Boletins', count: totalBoletins ?? 0, href: '/obsep-painel/boletins', cor: 'var(--brand-blue)', icon: '📋', desc: 'Boletins epidemiológicos publicados' },
-    { label: 'Membros', count: totalMembros ?? 0, href: '/obsep-painel/membros', cor: 'var(--brand-yellow)', icon: '👥', desc: 'Pesquisadores da equipe editorial' },
-    { label: 'Publicações', count: totalPublicacoes ?? 0, href: '/obsep-painel/publicacoes', cor: 'var(--brand-green)', icon: '📄', desc: 'Artigos e outras publicações' },
+    { label: 'Boletins', count: totalBoletins ?? 0, href: '/obsesp-painel/boletins', cor: 'var(--brand-blue)', icon: '📋', desc: 'Boletins epidemiológicos publicados' },
+    { label: 'Membros', count: totalMembros ?? 0, href: '/obsesp-painel/membros', cor: 'var(--brand-yellow)', icon: '👥', desc: 'Pesquisadores da equipe editorial' },
+    { label: 'Publicações', count: totalPublicacoes ?? 0, href: '/obsesp-painel/publicacoes', cor: 'var(--brand-green)', icon: '📄', desc: 'Artigos e outras publicações' },
+    { label: 'Notícias', count: totalNoticias ?? 0, href: '/obsesp-painel/noticias', cor: 'var(--brand-red)', icon: '📰', desc: 'Notícias e atualizações publicadas' },
   ]
 
   return (
@@ -47,16 +49,21 @@ export default async function AdminDashboard() {
       <div className="rounded-2xl border border-[var(--ink)]/10 p-6">
         <h2 className="font-semibold text-sm mb-4" style={{ fontFamily: 'var(--font-display)' }}>Ações rápidas</h2>
         <div className="flex flex-wrap gap-3">
-          <Link href="/obsep-painel/boletins/novo"
+          <Link href="/obsesp-painel/boletins/novo"
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-white transition hover:opacity-90"
             style={{ background: 'var(--brand-blue)' }}>
             + Novo boletim
           </Link>
-          <Link href="/obsep-painel/membros"
+          <Link href="/obsesp-painel/noticias/novo"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-white transition hover:opacity-90"
+            style={{ background: 'var(--brand-red)' }}>
+            + Nova notícia
+          </Link>
+          <Link href="/obsesp-painel/membros"
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium border border-[var(--ink)]/15 hover:border-[var(--ink)] transition">
             + Adicionar membro
           </Link>
-          <Link href="/obsep-painel/publicacoes"
+          <Link href="/obsesp-painel/publicacoes"
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium border border-[var(--ink)]/15 hover:border-[var(--ink)] transition">
             + Nova publicação
           </Link>

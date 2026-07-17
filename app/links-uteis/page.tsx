@@ -10,19 +10,114 @@ const BRAND = {
 
 const linksGrupos = [
   {
-    categoria: 'Bases de dados',
+    categoria: 'Produção Hospitalar (SIH/SUS)',
     accentColor: BRAND.blue,
     links: [
-      { label: 'DataSUS', url: 'https://datasus.saude.gov.br/', desc: 'Dados do Sistema Único de Saúde' },
-      { label: 'IBGE', url: 'https://www.ibge.gov.br/', desc: 'Instituto Brasileiro de Geografia e Estatística' },
+      {
+        label: 'Dados Consolidados AIH (RD) — por local de internação',
+        url: 'http://tabnet.datasus.gov.br/cgi/tabcgi.exe?sih/cnv/qipi.def',
+        desc: 'A partir de 2008',
+      },
+      {
+        label: 'Dados Consolidados AIH (RD) — por local de residência',
+        url: 'http://tabnet.datasus.gov.br/cgi/deftohtm.exe?sih/cnv/qrpi.def',
+        desc: 'A partir de 2008',
+      },
     ],
   },
   {
-    categoria: 'Parceiros institucionais',
+    categoria: 'Produção Ambulatorial (SIA/SUS)',
+    accentColor: BRAND.green,
+    links: [
+      {
+        label: 'Por local de atendimento',
+        url: 'http://tabnet.datasus.gov.br/cgi/deftohtm.exe?sia/cnv/qapi.def',
+        desc: 'A partir de 2008',
+      },
+      {
+        label: 'Por local de residência',
+        url: 'http://tabnet.datasus.gov.br/cgi/deftohtm.exe?sia/cnv/qbpi.def',
+        desc: 'A partir de 2008',
+      },
+    ],
+  },
+  {
+    categoria: 'Imunizações',
+    accentColor: BRAND.yellow,
+    links: [
+      {
+        label: 'Doses Aplicadas — Brasil',
+        url: 'http://tabnet.datasus.gov.br/cgi/dhdat.exe?bd_pni/dpnibr.def',
+        desc: 'Programa Nacional de Imunizações (PNI)',
+      },
+      {
+        label: 'Cobertura Vacinal — Brasil',
+        url: 'http://tabnet.datasus.gov.br/cgi/dhdat.exe?bd_pni/cpnibr.def',
+        desc: 'Programa Nacional de Imunizações (PNI)',
+      },
+    ],
+  },
+  {
+    categoria: 'Agravos e Doenças (SINAN)',
     accentColor: BRAND.red,
     links: [
-      { label: 'FSP/USP', url: 'https://www.fsp.usp.br/', desc: 'Faculdade de Saúde Pública — USP' },
-      { label: 'UFPI', url: 'https://www.ufpi.br/', desc: 'Universidade Federal do Piauí' },
+      {
+        label: 'Casos de Hanseníase',
+        url: 'http://tabnet.datasus.gov.br/cgi/tabcgi.exe?sinannet/cnv/hanswpi.def',
+        desc: 'Desde 2001 — Sistema de Informação de Agravos de Notificação',
+      },
+      {
+        label: 'Casos de Tuberculose',
+        url: 'http://tabnet.datasus.gov.br/cgi/tabcgi.exe?sinannet/cnv/tubercpi.def',
+        desc: 'Desde 2001 — Sistema de Informação de Agravos de Notificação',
+      },
+    ],
+  },
+  {
+    categoria: 'Nutrição, Nascimentos e Mortalidade',
+    accentColor: BRAND.blue,
+    links: [
+      {
+        label: 'Estado Nutricional (SISVAN)',
+        url: 'https://sisaps.saude.gov.br/sisvan/relatoriopublico/index',
+        desc: 'Sistema de Vigilância Alimentar e Nutricional',
+      },
+      {
+        label: 'Nascidos Vivos (SINASC)',
+        url: 'http://tabnet.datasus.gov.br/cgi/deftohtm.exe?sinasc/cnv/nvpi.def',
+        desc: 'Desde 1994',
+      },
+      {
+        label: 'Mortalidade — CID-10',
+        url: 'http://tabnet.datasus.gov.br/cgi/deftohtm.exe?sim/cnv/obt10pi.def',
+        desc: 'Desde 1996 — geral',
+      },
+      {
+        label: 'População Residente',
+        url: 'https://datasus.saude.gov.br/populacao-residente',
+        desc: 'DataSUS — estimativas populacionais',
+      },
+    ],
+  },
+  {
+    categoria: 'Inquéritos e Vigilância',
+    accentColor: BRAND.green,
+    links: [
+      {
+        label: 'PNS — Pesquisa Nacional de Saúde',
+        url: 'https://www.ibge.gov.br/estatisticas/sociais/saude/9160-pesquisa-nacional-de-saude.html?=&t=o-que-e',
+        desc: 'IBGE — dados sobre condições de saúde da população brasileira',
+      },
+      {
+        label: 'Vigitel',
+        url: 'https://svs.aids.gov.br/download/Vigitel/',
+        desc: 'Vigilância de Fatores de Risco e Proteção para Doenças Crônicas por Inquérito Telefônico',
+      },
+      {
+        label: 'SISAB — Atenção Básica',
+        url: 'https://sisab.saude.gov.br/paginas/acessoRestrito/relatorio/federal/saude/RelSauProducao.xhtml',
+        desc: 'Sistema de Informação em Saúde para a Atenção Básica',
+      },
     ],
   },
 ];
@@ -59,8 +154,7 @@ export default function LinksUteisPage() {
             </div>
 
             <div className="flex gap-6 text-xs font-mono text-[var(--ink)]/40 mt-4 ml-10">
-              <span>Publicado: 20/01/2025</span>
-              <span>Atualizado: 05/02/2025</span>
+              <span>Bases de dados, sistemas e inquéritos de saúde pública</span>
             </div>
           </div>
         </div>
@@ -89,16 +183,16 @@ export default function LinksUteisPage() {
                     rel="noopener noreferrer"
                     className="group flex flex-col gap-2 rounded-2xl border border-[var(--ink)]/10 p-5 hover:-translate-y-0.5 transition-transform"
                   >
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-start justify-between gap-2">
                       <span
-                        className="font-semibold text-base"
+                        className="font-semibold text-sm leading-snug"
                         style={{ fontFamily: 'var(--font-display)' }}
                       >
                         {link.label}
                       </span>
-                      <span className="opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 transition text-lg">↗</span>
+                      <span className="opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 transition text-lg shrink-0">↗</span>
                     </div>
-                    <p className="text-sm text-[var(--ink)]/55 leading-snug">{link.desc}</p>
+                    <p className="text-xs text-[var(--ink)]/55 leading-snug">{link.desc}</p>
                     <div className="h-0.5 rounded-full mt-1" style={{ background: grupo.accentColor }} />
                   </a>
                 ))}

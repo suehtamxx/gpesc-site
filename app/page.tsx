@@ -16,7 +16,7 @@ const cards = [
   { title: "Boletins", desc: "Publicações periódicas com indicadores de saúde.", tag: "03", color: BRAND.blue, fg: "white", href: "/boletins" },
   { title: "Outras publicações", desc: "Artigos, dissertações, relatórios técnicos.", tag: "04", color: BRAND.green, fg: "white", href: "/publicacoes" },
   { title: "Notícias", desc: "Atualizações, eventos e divulgação científica.", tag: "05", color: "var(--ink)", fg: "var(--paper)", href: "/noticias" },
-  { title: "Links úteis", desc: "Bases de dados, DataSUS, FSP/USP, parceiros.", tag: "06", color: "var(--paper)", fg: "var(--ink)", border: true, href: "/links-uteis" },
+  { title: "Links úteis", desc: "Bases de dados, DataSUS, parceiros.", tag: "06", color: "var(--paper)", fg: "var(--ink)", border: true, href: "/links-uteis" },
 ];
 
 function Stat({ n, l, color, dark }: { n: string; l: string; color: string; dark?: boolean }) {
@@ -41,42 +41,29 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-6 pt-16 pb-20 md:pt-24 md:pb-32">
           <div className="grid md:grid-cols-12 gap-10 items-end">
             <div className="md:col-span-8">
-              <div className="inline-flex items-center gap-2 mb-6 text-xs font-mono uppercase tracking-[0.2em] text-[var(--ink)]/60">
-                <span className="inline-block w-8 h-px bg-[var(--brand-red)]" />
-                Observatório · est. 2021
-              </div>
               <h1
                 className="text-[clamp(2.5rem,7vw,5.5rem)] leading-[0.95] font-semibold tracking-tight"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                Epidemiologia <em className="italic font-normal" style={{ color: BRAND.red }}>e</em>
-                <br />
-                saúde pública,
-                <br />
-                <span style={{ color: BRAND.blue }}>vigiando</span>{" "}
-                <span style={{ color: BRAND.green }}>o Piauí</span>.
+                Observatório de Epidemiologia e Saúde Pública
               </h1>
               <p className="mt-8 max-w-xl text-base md:text-lg text-[var(--ink)]/70 leading-relaxed">
                 O ObsESP é uma iniciativa de docentes doutores da UFPI — formados pela FSP/USP — dedicada à pesquisa e
                 vigilância epidemiológica nos níveis local, regional e nacional.
               </p>
               <div className="mt-10 flex flex-wrap gap-3">
-                <a href="/sobre" className="px-5 py-3 bg-[var(--ink)] text-[var(--paper)] rounded-full text-sm font-medium hover:bg-[var(--brand-red)] transition">
-                  Explorar o observatório →
-                </a>
                 <a href="/boletins" className="px-5 py-3 border border-[var(--ink)]/20 rounded-full text-sm font-medium hover:border-[var(--ink)] transition">
                   Ler último boletim
                 </a>
               </div>
             </div>
 
-            <div className="md:col-span-4 flex md:justify-end">
-              <div className="grid grid-cols-2 gap-3 w-full max-w-xs">
-                <Stat n="2021" l="fundação" color={BRAND.yellow} dark />
-                <Stat n="ISAD-PI" l="inquérito pioneiro" color={BRAND.red} />
-                <Stat n="2" l="cidades base" color={BRAND.blue} />
-                <Stat n="FSP/USP" l="parceria" color={BRAND.green} />
-              </div>
+            <div className="md:col-span-4 flex md:justify-end items-center">
+              <img
+                src="/logo.png"
+                alt="Logo do Observatório de Epidemiologia e Saúde Pública"
+                className="w-full max-w-xs object-contain"
+              />
             </div>
           </div>
         </div>
