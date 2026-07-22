@@ -113,7 +113,7 @@ export default async function SobrePage() {
                 className="text-2xl md:text-3xl font-semibold tracking-tight"
                 style={{ fontFamily: 'var(--font-display)' }}
               >
-                Equipe editorial
+                Membros
               </h2>
               {membros.length > 0 && (
                 <span className="text-xs font-mono text-[var(--ink)]/40 hidden md:block">

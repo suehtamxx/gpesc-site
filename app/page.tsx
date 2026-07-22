@@ -39,7 +39,7 @@ export default function Home() {
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="mx-auto max-w-7xl px-6 pt-16 pb-20 md:pt-24 md:pb-32">
-          <div className="grid md:grid-cols-12 gap-10 items-end">
+          <div className="grid md:grid-cols-12 gap-10 items-start">
             <div className="md:col-span-8">
               <h1
                 className="text-[clamp(2.5rem,7vw,5.5rem)] leading-[0.95] font-semibold tracking-tight"
@@ -58,7 +58,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="md:col-span-4 flex md:justify-end items-center">
+            <div className="md:col-span-4 flex md:justify-end items-start">
               <img
                 src="/logo.png"
                 alt="Logo do Observatório de Epidemiologia e Saúde Pública"
