@@ -49,6 +49,16 @@ export default function AdminMembrosPage() {
     if (fotoInputRef.current) fotoInputRef.current.value = ''
   }
 
+  /** Remove acentos e caracteres especiais para gerar um nome de arquivo seguro */
+  function sanitizarNomeArquivo(nome: string): string {
+    return nome
+      .normalize('NFD')                   // decompõe letras acentuadas (e.g. ã → a + ̃)
+      .replace(/[\u0300-\u036f]/g, '')    // remove os diacríticos (marcas de acento)
+      .replace(/[^a-z0-9_.-]/gi, '_')    // substitui qualquer caractere inválido por _
+      .replace(/_+/g, '_')               // colapsa múltiplos _ consecutivos
+      .toLowerCase()
+  }
+
   async function salvar(e: React.FormEvent) {
     e.preventDefault()
     if (!form.nome) return
@@ -60,7 +70,8 @@ export default function AdminMembrosPage() {
     // Upload da foto se selecionada
     if (fotoArquivo) {
       const ext = fotoArquivo.name.split('.').pop()
-      const nomeArquivo = `${Date.now()}_${form.nome.replace(/\s+/g, '_').toLowerCase()}.${ext}`
+      const nomeBase = sanitizarNomeArquivo(form.nome.replace(/\s+/g, '_'))
+      const nomeArquivo = `${Date.now()}_${nomeBase}.${ext}`
 
       const { data: upload, error: uploadErr } = await supabase.storage
         .from('membros-fotos')
