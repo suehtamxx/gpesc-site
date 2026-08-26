@@ -1,5 +1,6 @@
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { noSSR } from 'next/dynamic';
 
 const BRAND = {
   yellow: 'var(--brand-yellow)',
@@ -32,7 +33,16 @@ const projetos = [
     coordenador: 'Prof.ª Edina Araújo Rodrigues Oliveira',
     vigencia: '01/01/2025 a 31/12/2026',
     descricao: `O presente projeto tem como proposta divulgar informações baseadas em evidências científicas, por meio de uma abordagem multiprofissional, sobre hábitos de vida saudável em crianças. Para tanto, pretende-se promover ações educativas a partir de dados epidemiológicos oriundos do "Inquérito de saúde de base populacional nos municípios de Teresina e Picos, no Piauí (ISAD-PI)", visando fortalecer a atenção à saúde infantil.`,
-    cursos: [],
+    cursos: [
+      {
+        nome: 'Curso de extensão: "Estilo de vida saudável: desafios e perspectivas para a saúde infantil". Destinado ao corpo discente dos cursos da área de saúde do CSHNB/UFPI e de outras instituições de ensino e profissionais da área.',
+        previsao: '2025',
+      },
+      {
+        nome: 'Atividade de extensão: Elaboração de material educativo com dados epidemiológicos para promoção da saúde do escolar. Destinado ao corpo discente dos cursos de saúde do CSHNB/UFPI, escolares matriculados na rede municipal de ensino da zona urbana de Picos PI, mães, pais, cuidadores e/ou familiares do público infantil e profissionais de educação da rede municipal de ensino básico de Picos-PI.',
+        previsao: '2026',
+      }
+    ],
     accentColor: BRAND.green,
     tag: '02',
   },
