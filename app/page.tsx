@@ -1,7 +1,13 @@
 'use client';
 
+import { useState, useEffect } from "react";
+import { createClient } from "@supabase/supabase-js";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 const BRAND = {
   yellow: "var(--brand-yellow)",
@@ -9,6 +15,16 @@ const BRAND = {
   blue: "var(--brand-blue)",
   green: "var(--brand-green)",
 };
+
+const firstLinks = [
+  { name: "Apresentação", href: "/apresentacao" },
+  { name: "Normas de publicação", href: "/normas-publicacao" },
+  { name: "Expediente", href: "/expediente" },
+];
+
+const lastLinks = [
+  { name: "Publicações anteriores", href: "/boletins" },
+];
 
 const cards = [
   { title: "Quem somos", desc: "Pesquisadores, missão e história do observatório.", tag: "01", color: BRAND.yellow, fg: "var(--ink)", href: "/sobre" },
@@ -19,42 +35,80 @@ const cards = [
   { title: "Links úteis", desc: "Bases de dados, DataSUS, parceiros.", tag: "06", color: "var(--paper)", fg: "var(--ink)", border: true, href: "/links-uteis" },
 ];
 
-function Stat({ n, l, color, dark }: { n: string; l: string; color: string; dark?: boolean }) {
-  return (
-    <div
-      className="aspect-square rounded-2xl p-4 flex flex-col justify-between"
-      style={{ background: color, color: dark ? "var(--ink)" : "white" }}
-    >
-      <span className="font-mono text-[10px] uppercase tracking-wider opacity-70">{l}</span>
-      <span className="text-xl font-semibold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>{n}</span>
-    </div>
-  );
-}
-
 export default function Home() {
+  const [latestPubLink, setLatestPubLink] = useState("/boletins");
+
+  useEffect(() => {
+    async function fetchLatestPublication() {
+      try {
+        const { data, error } = await supabase
+          .from('boletins')
+          .select('id, pdf_url')
+          .eq('publicado', true)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single();
+
+        if (error) {
+          throw error;
+        }
+
+        if (data) {
+          setLatestPubLink(data.pdf_url);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar última publicação no Supabase:", error);
+      }
+    }
+
+    fetchLatestPublication();
+  }, []);
+
   return (
     <div className="min-h-screen bg-[var(--paper)] text-[var(--ink)] antialiased">
       <Header />
 
-      {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="mx-auto max-w-7xl px-6 pt-16 pb-20 md:pt-24 md:pb-32">
           <div className="grid md:grid-cols-12 gap-10 items-start">
             <div className="md:col-span-8">
-              <h1
-                className="text-[clamp(2.5rem,7vw,5.5rem)] leading-[0.95] font-semibold tracking-tight"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
+              <h1 className="text-[clamp(2.5rem,7vw,5.5rem)] leading-[0.95] font-semibold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>
                 Observatório de Epidemiologia e Saúde Pública
               </h1>
               <p className="mt-8 max-w-xl text-base md:text-lg text-[var(--ink)]/70 leading-relaxed">
                 O ObsESP é uma iniciativa de docentes doutores da UFPI — formados pela FSP/USP — dedicada à pesquisa e
                 vigilância epidemiológica nos níveis local, regional e nacional.
               </p>
+
               <div className="mt-10 flex flex-wrap gap-3">
-                <a href="/boletins" className="px-5 py-3 border border-[var(--ink)]/20 rounded-full text-sm font-medium hover:border-[var(--ink)] transition">
-                  Ler último boletim
+                {firstLinks.map((link) => (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    className="px-5 py-3 border border-[var(--ink)]/20 rounded-full text-sm font-medium hover:border-[var(--ink)] transition"
+                  >
+                    {link.name}
+                  </a>
+                ))}
+
+                <a
+                  href={latestPubLink}
+                  target={latestPubLink !== "/boletins" ? "_blank" : "_self"}
+                  rel="noopener noreferrer"
+                  className="px-5 py-3 border border-[var(--ink)]/20 rounded-full text-sm font-medium hover:border-[var(--ink)] transition"
+                >
+                  Publicação atual
                 </a>
+
+                {lastLinks.map((link) => (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    className="px-5 py-3 border border-[var(--ink)]/20 rounded-full text-sm font-medium hover:border-[var(--ink)] transition"
+                  >
+                    {link.name}
+                  </a>
+                ))}
               </div>
             </div>
 
@@ -67,7 +121,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-        {/* decorative bottom rule */}
         <div className="mx-auto max-w-7xl px-6">
           <div className="flex h-1.5">
             <div className="flex-1" style={{ background: BRAND.yellow }} />
@@ -78,7 +131,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Cards grid */}
       <section id="cards" className="mx-auto max-w-7xl px-6 py-20">
         <div className="flex items-end justify-between mb-10">
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>
@@ -109,7 +161,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Sobre / mission strip */}
       <section id="sobre" className="border-y border-[var(--ink)]/10 bg-[var(--ink)] text-[var(--paper)]">
         <div className="mx-auto max-w-7xl px-6 py-20 grid md:grid-cols-12 gap-10">
           <div className="md:col-span-4">
