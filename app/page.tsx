@@ -27,7 +27,7 @@ const lastLinks = [
 ];
 
 const cards = [
-  { title: "Quem somos", desc: "Pesquisadores, missão e história do observatório.", tag: "01", color: BRAND.yellow, fg: "var(--ink)", href: "/sobre" },
+  { title: "Quem Somos", desc: "Pesquisadores, missão e história do observatório.", tag: "01", color: BRAND.yellow, fg: "var(--ink)", href: "/sobre" },
   { title: "Programas e Projetos", desc: "Linhas de pesquisa ativas, parcerias e inquéritos.", tag: "02", color: BRAND.red, fg: "white", href: "/programas-projetos" },
   { title: "Boletins", desc: "Publicações periódicas com indicadores de saúde.", tag: "03", color: BRAND.blue, fg: "white", href: "/boletins" },
   { title: "Outras publicações", desc: "Artigos, dissertações, relatórios técnicos.", tag: "04", color: BRAND.green, fg: "white", href: "/publicacoes" },

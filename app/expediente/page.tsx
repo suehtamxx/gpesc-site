@@ -14,10 +14,8 @@ export default function ExpedientePage() {
             <Header />
 
             <main className="flex-grow">
-                {/* Page hero */}
                 <div className="border-b border-[var(--ink)]/10">
                     <div className="mx-auto max-w-7xl px-6 pt-12 pb-10">
-                        {/* Breadcrumb */}
                         <nav className="flex items-center gap-2 text-xs font-mono uppercase tracking-[0.15em] text-[var(--ink)]/50 mb-8">
                             <a href="/" className="hover:text-[var(--brand-red)] transition">ObsESP</a>
                             <span>/</span>
@@ -41,9 +39,7 @@ export default function ExpedientePage() {
                     </div>
                 </div>
 
-                {/* Content */}
                 <div className="mx-auto max-w-7xl px-6 py-16 grid md:grid-cols-12 gap-12">
-                    {/* Sidebar accent */}
                     <aside className="md:col-span-3 hidden md:block">
                         <div className="flex h-1.5 mb-6">
                             <div className="flex-1" style={{ background: BRAND.yellow }} />
@@ -52,31 +48,59 @@ export default function ExpedientePage() {
                             <div className="flex-1" style={{ background: BRAND.green }} />
                         </div>
                         <span className="text-xs font-mono uppercase tracking-[0.15em] text-[var(--ink)]/40">
-                            Sobre o observatório
+                            Informações
                         </span>
                     </aside>
 
-                    {/* Main text */}
-                    <div className="md:col-span-9 space-y-6 text-base md:text-lg text-[var(--ink)]/80 leading-relaxed">
-                        <p>
-                            O <strong className="text-[var(--ink)]">Observatório de Epidemiologia e Saúde Pública (ObsESP)</strong> da
-                            UFPI surgiu com o objetivo de dar continuidade às atividades de pesquisa e vigilância epidemiológica,
-                            promovendo a divulgação do conhecimento científico e sua aproximação com a sociedade.
-                        </p>
-                        <p>
-                            Em consonância com essa trajetória, as submissões são exclusivas para integrantes do ObsESP e devem
-                            contemplar trabalhos resultantes das pesquisas desenvolvidas pelo grupo.
-                        </p>
-                        <p>
-                            O observatório está aberto a parcerias, devendo, para tal, grupos interessados entrarem em contato por
-                            meio do email:{' '}
-                            <a
-                                href="mailto:xxxxx"
-                                className="font-medium text-[var(--brand-blue)] hover:underline"
+                    <div className="md:col-span-9 space-y-12 text-[var(--ink)]/80">
+
+                        {/* Seção Editora */}
+                        <section>
+                            <h2
+                                className="text-xl md:text-2xl font-semibold mb-4 text-[var(--ink)]"
+                                style={{ fontFamily: 'var(--font-display)' }}
                             >
-                                xxxxx
-                            </a>.
-                        </p>
+                                Editora
+                            </h2>
+                            <div className="space-y-1 text-base md:text-lg leading-relaxed">
+                                <p>Observatório em Epidemiologia e Saúde Pública (ObsESP)</p>
+                                <p>Universidade Federal do Piauí – UFPI</p>
+                                <p>Campus Senador Helvídio Nunes de Barros (CSHNB)</p>
+                                <p>Rua Cícero Duarte, nº 905 - Bairro Junco</p>
+                                <p>CEP: 64607-670 | Picos – PI</p>
+                            </div>
+                        </section>
+
+                        {/* Seção Conselho Editorial */}
+                        <section>
+                            <h2
+                                className="text-xl md:text-2xl font-semibold mb-4 text-[var(--ink)]"
+                                style={{ fontFamily: 'var(--font-display)' }}
+                            >
+                                Conselho Editorial
+                            </h2>
+                            <ul className="space-y-2 text-base md:text-lg leading-relaxed">
+                                <li>Danilla Michelle Costa e Silva</li>
+                                <li>Edina Araújo Rodrigues Oliveira</li>
+                                <li>Laura Maria Feitosa Formiga</li>
+                                <li>Rumão Batista Nunes de Carvalho</li>
+                                <li>Ruan Everton de Souza Silva</li>
+                            </ul>
+                        </section>
+
+                        {/* Seção Periodicidade */}
+                        <section>
+                            <h2
+                                className="text-xl md:text-2xl font-semibold mb-4 text-[var(--ink)]"
+                                style={{ fontFamily: 'var(--font-display)' }}
+                            >
+                                Periodicidade
+                            </h2>
+                            <p className="text-base md:text-lg leading-relaxed">
+                                Trimestral
+                            </p>
+                        </section>
+
                     </div>
                 </div>
             </main>
